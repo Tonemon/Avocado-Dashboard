@@ -19,8 +19,12 @@ $plant = $_POST['aPlant'];
 $description = $_POST['aDesc'];
 
 // insert question to table 'customernew'
+ if ($water == "" || $plant == "" || $description == ""){
+        echo "Lol, really sneaky! Please log in to use the form to submit.";
+ } else {
 	$sql="insert into PlantDAT values('','$date','$description','$water','$plant')";
 	$result = mysqli_query($conn, $sql);
 	header('location:index.php');
+ }
 ?>
 
