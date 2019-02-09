@@ -41,22 +41,25 @@ if (isset($_COOKIE['PrivatePageLogin'])) {
           <form class="needs-validation" method="post" action="process.php" novalidate>
             <div class="row">
               <div class="col-md-4 mb-4">
-                <label for="fieldDate">Date</label>
-                <input type="date" class="form-control" name="aDate" id="fieldDate" required>
+                <label for="fieldDate">
+                <input type="radio" name="date" value="today" checked> Today (<i><?php echo date("d-m-Y"); ?></i>) <b>or</b>
+                <input type="radio" name="date" value="custom"> Custom: 
+                </label>
+                <input type="date" class="form-control" name="aDate" id="fieldDate">
                 <div class="invalid-feedback">
                   Date is required.
                 </div>
               </div>
 			  <div class="col-md-4 mb-4">
                 <label for="fieldWater">Water absorbed (cm of cup)</label>
-                <input type="number" class="form-control" name="aWater" id="fieldWater" required>
+                <input type="number" class="form-control" name="aWater" id="fieldWater" step="any" required>
                 <div class="invalid-feedback">
                   'Water absorbed' field is required.
                 </div>
               </div>
 			  <div class="col-md-4 mb-4">
                 <label for="fieldPlant">Plant Growth (cm)</label>
-                <input type="number" class="form-control" name="aPlant" id="fieldPlant" required>
+                <input type="number" class="form-control" name="aPlant" id="fieldPlant" step="any" required>
                 <div class="invalid-feedback">
                    'Plant Growth' field is required.
                 </div>
@@ -64,10 +67,19 @@ if (isset($_COOKIE['PrivatePageLogin'])) {
             </div>
             <div class="row">
               <div class="col-md-12 mb-3">
-                <label for="fieldDesc">Description (not required)</label>
+                <label for="fieldDesc">Description / Status. <br>
+                <input type="radio" name="desc" value="preset" checked> Use a preset:
+                <select name="description">
+                  <option value="nothing"> Nothing yet.</option>
+                  <option value="grow"> Plant growed.</option>
+                  <option value="water"> Plant absorbed a lot of water.</option>
+                  <option value="both"> Plant did both.</option>
+                </select> <b>or</b>
+                <input type="radio" name="desc" value="custom"> Custom description:
+                </label>
                 <input type="text" class="form-control" name="aDesc" id="fieldDesc" placeholder="A Description/status of the plant. If nothing happened, you could write for example: 'Nothing yet.'">
                 <div class="invalid-feedback">
-                  Description is required.
+                   A description is required.
                 </div>
               </div>
             </div>

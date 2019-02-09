@@ -13,18 +13,39 @@ if (!$conn) {
 }
 
 // getting variables to store in table
-$date = $_POST['aDate'];
+$varDate = $_POST['date'];
+if ($varDate == "today"){
+        $date = date("Y-m-d");
+} else {
+        $date = $_POST['aDate'];
+}
+
 $water = $_POST['aWater'];
 $plant = $_POST['aPlant'];
-$description = $_POST['aDesc'];
+
+$varDescChoose = $_POST['desc'];
+if ($varDescChoose == "preset"){
+        $varDesc = $_POST['description'];
+        if ($varDesc == "nothing"){
+            $description = "Nothing yet.";
+        } elseif ($varDesc == "grow"){
+            $description = "Plant growed.";
+        } elseif ($varDesc == "water"){
+            $description = "Plant absorbed a lot of water.";
+        } else {
+            $description - "Plant growed and absorbed a lot of water.";
+        }
+} else {
+        $description = $_POST['aDesc'];
+}
 
 // insert question to table 'customernew'
- if ($water == "" || $plant == "" || $description == ""){
+if ($water == "" && $plant == "" || $plant == "" || $water == ""){
         echo "Lol, really sneaky! Please log in to use the form to submit.";
- } else {
+} else {
 	$sql="insert into PlantDAT values('','$date','$description','$water','$plant')";
 	$result = mysqli_query($conn, $sql);
 	header('location:index.php');
- }
+}
 ?>
 
