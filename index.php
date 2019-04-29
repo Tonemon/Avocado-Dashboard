@@ -1,16 +1,16 @@
 <?php
-// database connection
-$serverName="*YOUR HOST*";
-$dbusername="*YOUR DATABASE USERNAME*";
-$dbpassword="*YOUR DATABASE PASSWORD*";
-$dbname="*YOUR DATABASE NAME*";
+	// database connection
+	$serverName="*YOUR HOST*";
+	$dbusername="*YOUR DATABASE USERNAME*";
+	$dbpassword="*YOUR DATABASE PASSWORD*";
+	$dbname="*YOUR DATABASE NAME*";
 
-$conn = mysqli_connect($serverName, $dbusername, $dbpassword, $dbname);
+	$conn = mysqli_connect($serverName, $dbusername, $dbpassword, $dbname);
 
-// Check connection
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
+	// Check connection
+	if (!$conn) {
+		die("Connection failed: " . mysqli_connect_error());
+	}
 ?>
 
 <!doctype html>
@@ -30,12 +30,11 @@ if (!$conn) {
     <!-- Custom styles for this template -->
     <link href="dashboard.css" rel="stylesheet">
   </head>
-
   <body>
         <main role="main" class=" pt-3 px-4">
           <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
             <h1 class="h2">Avocado Plant Dashboard</h1>
-            <p>I made this dashboard to keep track of my avocado plant.<br>The stats are updated to a database locally, no login here.</p>
+            <p>I made this dashboard to keep track of my avocado plant.<br>The stats are updated to a database and then displayed here.</p>
             <div class="btn-toolbar mb-2 mb-md-0">
               <div class="btn-group mr-2">
                 <button class="btn btn-sm btn-outline-secondary">Share</button>
@@ -49,13 +48,15 @@ if (!$conn) {
           </div>
 
           <canvas class="my-4" id="lineChart" width="900" height="380"></canvas><br>
-
           <?php
-                $sql="SELECT * FROM PlantDAT ORDER BY date DESC";
-                $result = mysqli_query($conn, $sql);
+                $result = mysqli_query($conn, "SELECT * FROM PlantDAT ORDER BY date DESC");
+                
+                $totalexec = mysqli_fetch_array(mysqli_query($conn, "SELECT COUNT(1) FROM PlantDAT"));
+                $totalquery = $totalexec[0];
           ?>		
           <h2>Plant Information</h2>
-          <p>This tables shows the date, description, plant growth (in cm) and the amount of water it absorbed.</p>
+          <p>This tables shows the date, description, plant growth (in cm) and the amount of water it absorbed.
+		  Total records submitted: <b><?php echo $totalquery; ?></b>.</p>
           <div class="table-responsive">
             <table class="table table-striped table-sm">
               <thead>
@@ -80,27 +81,21 @@ if (!$conn) {
           </div>
 
     <?php 
-    // Get the 'water (cm)' from database to chart
-            $query="SELECT GROUP_CONCAT(`water (cm)` SEPARATOR ', ') FROM PlantDAT ORDER BY date";
-            $result = mysqli_query($conn, $query);
+    // Get the 'water (cm)' from database to chart  
+            $result = mysqli_query($conn, "SELECT GROUP_CONCAT(`water (cm)` SEPARATOR ', ') FROM PlantDAT ORDER BY date");
             foreach($result as $category) { }
-    
             $res_arr = implode(',',$category);
             //print_r($res_arr);
             
     // Get the 'plant (cm)' from database to chart
-            $query2="SELECT GROUP_CONCAT(`plant (cm)` SEPARATOR ', ') FROM PlantDAT ORDER BY date";
-            $result2 = mysqli_query($conn, $query2);
+            $result2 = mysqli_query($conn, "SELECT GROUP_CONCAT(`plant (cm)` SEPARATOR ', ') FROM PlantDAT ORDER BY date");
             foreach($result2 as $category2) { }
-    
             $res_arr2 = implode(',',$category2);
             //print_r($res_arr2);
             
     // Get the dates from database to chart
-            $query3="SELECT GROUP_CONCAT(`date` SEPARATOR '`, `') FROM PlantDAT";
-            $result3 = mysqli_query($conn, $query3);
+            $result3 = mysqli_query($conn, "SELECT GROUP_CONCAT(`date` SEPARATOR '`, `') FROM PlantDAT");
             foreach($result3 as $category3) { }
-    
             $res_arr3 = implode(',',$category3);
             //print_r($res_arr3);
     ?>
@@ -114,42 +109,40 @@ if (!$conn) {
     <!-- Graphs -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
     <script>
-  //line
-  var ctxL = document.getElementById("lineChart").getContext('2d');
-  var myLineChart = new Chart(ctxL, {
-    type: 'line',
-    data: {
-      labels: [` <?php print_r($res_arr3); ?>`],
-      datasets: [{
-          label: "Water absorbed (cm)",
-          data: [<?php print_r($res_arr); ?>],
-          backgroundColor: [
-            'rgba(105, 0, 132, .2)',
-          ],
-          borderColor: [
-            'rgba(200, 99, 132, .7)',
-          ],
-          borderWidth: 2
-        },
-        {
-          label: "Plant growth (cm)",
-          data: [<?php print_r($res_arr2); ?>],
-          backgroundColor: [
-            'rgba(0, 137, 132, .2)',
-          ],
-          borderColor: [
-            'rgba(0, 10, 130, .7)',
-          ],
-          borderWidth: 2
-        }
-      ]
-    },
-    options: {
-      responsive: true
-    }
-  });
-
-
-</script>
+	  //line
+	  var ctxL = document.getElementById("lineChart").getContext('2d');
+	  var myLineChart = new Chart(ctxL, {
+		type: 'line',
+		data: {
+		  labels: [` <?php print_r($res_arr3); ?>`],
+		  datasets: [{
+			  label: "Water absorbed (cm)",
+			  data: [<?php print_r($res_arr); ?>],
+			  backgroundColor: [
+				'rgba(105, 0, 132, .2)',
+			  ],
+			  borderColor: [
+				'rgba(200, 99, 132, .7)',
+			  ],
+			  borderWidth: 2
+			},
+			{
+			  label: "Plant growth (cm)",
+			  data: [<?php print_r($res_arr2); ?>],
+			  backgroundColor: [
+				'rgba(0, 137, 132, .2)',
+			  ],
+			  borderColor: [
+				'rgba(0, 10, 130, .7)',
+			  ],
+			  borderWidth: 2
+			}
+		  ]
+		},
+		options: {
+		  responsive: true
+		}
+	  });
+	</script>
   </body>
 </html>
